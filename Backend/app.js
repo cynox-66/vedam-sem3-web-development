@@ -331,6 +331,8 @@
 
  let express= require("express")
  let app= express()
+ let cors= require('cors')
+ app.use(cors())
  let products = [
     {
         id: 1,
@@ -469,9 +471,13 @@ app.put('/product/:id',(req,res)=>{
  })
 
 
+
+//  cors
+
+
 // // GET     /products
 
-// // GET     /products/3
+// // GET     /products/3 
 
 // // GET     /products?category=mobile
 
