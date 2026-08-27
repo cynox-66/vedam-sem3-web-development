@@ -491,23 +491,27 @@
 let express= require("express")
 let mongoose=   require('mongoose')
 let bcryptjs=  require('bcryptjs')
+  let cors=require('cors')
 let app=  express()
 let User=  require('./db/db.js')
 app.use(express.json())
+app.use(cors())
+
 
 mongoose.connect("mongodb://127.0.0.1:27017/db").then(()=>{
    console.log("db......");
    
 })
+
 app.post("/signUp", async(req,res)=>{
    let {name,email,passWord}=req.body
   let findData=   await User.findOne({email})
   console.log(findData,"hjehehe");
-  
   if(findData){
    return res.send("user jinda haii....")
   }else{
      let updateddP=   await bcryptjs.hash(passWord,10)
+
      console.log(updateddP,"dekhoooooo");
      
  let UserInfo=  new User({
@@ -518,10 +522,23 @@ app.post("/signUp", async(req,res)=>{
       await UserInfo.save()
       res.send("done.......")
   }
-
-
 })
 
+
+
+app.post('/login', async(req,res)=>{
+   let {email,passWord}=req.body
+
+ let findData=   await User.findOne({email})    
+ console.log(findData,"heheh");
+
+ let validP= await   bcryptjs.compare(passWord,findData.passWord)
+ if(!validP){
+   return res.send("kuch nhi ho payega aapse.....")
+ }
+ res.send("all done....")
+
+})
 
 
 
@@ -549,17 +566,17 @@ app.post("/signUp", async(req,res)=>{
 // })
 
 
-// app.listen(3000,()=>{
-//    console.log("server......");
+app.listen(3000,()=>{
+   console.log("server......");
    
-// })
+})
 
 
 
 // Saare employees ka data dekho.
 // Sirf name aur salary dekho.
 // Age 25 se zyada wale employees nikalo.
-// Pune ke employees nikalo.
+// Pune ke employees nikalo.`
 // Pune ke employees jinki salary 40,000 se zyada hai.
 // IT department ke employees nikalo.
 // Pune ya Mumbai ke employees nikalo.
@@ -567,70 +584,70 @@ app.post("/signUp", async(req,res)=>{
 // Salary highest se lowest order me data dekho.
 // Top 5 highest salary wale employees nikalo.
 
-CREATE TABLE employee (
-   id INT,
-   name VARCHAR(50),
-   age INT,
-   city VARCHAR(50),
-   department VARCHAR(50),
-   salary DECIMAL(10,2),
-   experience INT,
-   email VARCHAR(100)
-);
+// CREATE TABLE employee (
+//    id INT,
+//    name VARCHAR(50),
+//    age INT,
+//    city VARCHAR(50),
+//    department VARCHAR(50),
+//    salary DECIMAL(10,2),
+//    experience INT,
+//    email VARCHAR(100)
+// );
 
 
-INSERT INTO employee (id, name, age, city, department, salary, experience, email)
-VALUES
-(1, 'Aman', 22, 'Pune', 'IT', 25000.00, 1, 'aman@gmail.com'),
-(2, 'Riya', 24, 'Mumbai', 'HR', 32000.00, 2, 'riya@gmail.com'),
-(3, 'Rohit', 27, 'Delhi', 'IT', 45000.00, 5, 'rohit@gmail.com'),
-(4, 'Priya', 23, 'Pune', 'Finance', 28000.00, 2, NULL),
-(5, 'Rahul', 29, 'Mumbai', 'Sales', 50000.00, 6, 'rahul@gmail.com'),
-(6, 'Neha', 26, 'Delhi', 'HR', 38000.00, 4, 'neha@gmail.com'),
-(7, 'Karan', 25, 'Pune', 'IT', 35000.00, 3, 'karan@gmail.com'),
-(8, 'Sneha', 28, 'Indore', 'Finance', 42000.00, 5, 'sneha@gmail.com'),
-(9, 'Vikas', 21, 'Mumbai', 'Sales', 24000.00, 1, NULL),
-(10, 'Pooja', 30, 'Delhi', 'IT', 55000.00, 7, 'pooja@gmail.com'),
-(11, 'Ankit', 24, 'Pune', 'HR', 30000.00, 2, 'ankit@gmail.com'),
-(12, 'Kajal', 27, 'Mumbai', 'Finance', 47000.00, 5, 'kajal@gmail.com'),
-(13, 'Deepak', 31, 'Indore', 'Sales', 60000.00, 8, 'deepak@gmail.com'),
-(14, 'Aarti', 23, 'Delhi', 'IT', 29000.00, 2, 'aarti@gmail.com'),
-(15, 'Sahil', 26, 'Pune', 'Finance', 40000.00, 4, NULL),
-(16, 'Nisha', 28, 'Mumbai', 'HR', 46000.00, 6, 'nisha@gmail.com'),
-(17, 'Mohit', 25, 'Delhi', 'Sales', 36000.00, 3, 'mohit@gmail.com'),
-(18, 'Simran', 29, 'Indore', 'IT', 52000.00, 7, 'simran@gmail.com'),
-(19, 'Arjun', 22, 'Pune', 'HR', 26000.00, 1, 'arjun@gmail.com'),
-(20, 'Riya', 27, 'Mumbai', 'IT', 48000.00, 5, 'riya2@gmail.com'),
-(21, 'Akash', 32, 'Delhi', 'Finance', 65000.00, 10, NULL),
-(22, 'Divya', 24, 'Indore', 'Sales', 33000.00, 3, 'divya@gmail.com'),
-(23, 'Manish', 30, 'Pune', 'IT', 58000.00, 8, 'manish@gmail.com'),
-(24, 'Shreya', 26, 'Mumbai', 'Finance', 41000.00, 4, 'shreya@gmail.com'),
-(25, 'Ravi', 23, 'Delhi', 'HR', 31000.00, 2, 'ravi@gmail.com'),
-(26, 'Tanya', 28, 'Indore', 'IT', 49000.00, 6, NULL),
-(27, 'Suresh', 33, 'Pune', 'Sales', 70000.00, 11, 'suresh@gmail.com'),
-(28, 'Meena', 25, 'Mumbai', 'HR', 37000.00, 3, 'meena@gmail.com'),
-(29, 'Abhishek', 29, 'Delhi', 'Finance', 54000.00, 7, 'abhishek@gmail.com'),
-(30, 'Isha', 22, 'Indore', 'IT', 27000.00, 1, 'isha@gmail.com'),
-(31, 'Vivek', 34, 'Pune', 'Finance', 75000.00, 12, 'vivek@gmail.com'),
-(32, 'Anjali', 27, 'Mumbai', 'Sales', 44000.00, 5, NULL),
-(33, 'Rakesh', 26, 'Delhi', 'IT', 43000.00, 4, 'rakesh@gmail.com'),
-(34, 'Sonia', 24, 'Indore', 'HR', 34000.00, 3, 'sonia@gmail.com'),
-(35, 'Nitin', 30, 'Pune', 'Sales', 56000.00, 8, 'nitin@gmail.com'),
-(36, 'Komal', 25, 'Mumbai', 'IT', 39000.00, 3, 'komal@gmail.com'),
-(37, 'Aditya', 28, 'Delhi', 'Finance', 51000.00, 6, 'aditya@gmail.com'),
-(38, 'Bhavna', 23, 'Indore', 'Sales', 30000.00, 2, NULL),
-(39, 'Harsh', 31, 'Pune', 'HR', 62000.00, 9, 'harsh@gmail.com'),
-(40, 'Payal', 26, 'Mumbai', 'Finance', 45000.00, 4, 'payal@gmail.com'),
-(41, 'Gaurav', 29, 'Delhi', 'IT', 53000.00, 7, 'gaurav@gmail.com'),
-(42, 'Muskan', 22, 'Indore', 'HR', 26000.00, 1, 'muskan@gmail.com'),
-(43, 'Yash', 27, 'Pune', 'Sales', 47000.00, 5, NULL),
-(44, 'Nidhi', 28, 'Mumbai', 'IT', 50000.00, 6, 'nidhi@gmail.com'),
-(45, 'Tarun', 32, 'Delhi', 'Sales', 68000.00, 10, 'tarun@gmail.com'),
-(46, 'Radhika', 24, 'Indore', 'Finance', 35000.00, 3, 'radhika@gmail.com'),
-(47, 'Ashish', 30, 'Pune', 'IT', 59000.00, 8, 'ashish@gmail.com'),
-(48, 'Preeti', 25, 'Mumbai', 'HR', 38000.00, 3, NULL),
-(49, 'Sanjay', 33, 'Delhi', 'Finance', 72000.00, 11, 'sanjay@gmail.com'),
-(50, 'Kriti', 23, 'Indore', 'IT', 31000.00, 2, 'kriti@gmail.com');
+// INSERT INTO employee (id, name, age, city, department, salary, experience, email)
+// VALUES
+// (1, 'Aman', 22, 'Pune', 'IT', 25000.00, 1, 'aman@gmail.com'),
+// (2, 'Riya', 24, 'Mumbai', 'HR', 32000.00, 2, 'riya@gmail.com'),
+// (3, 'Rohit', 27, 'Delhi', 'IT', 45000.00, 5, 'rohit@gmail.com'),
+// (4, 'Priya', 23, 'Pune', 'Finance', 28000.00, 2, NULL),
+// (5, 'Rahul', 29, 'Mumbai', 'Sales', 50000.00, 6, 'rahul@gmail.com'),
+// (6, 'Neha', 26, 'Delhi', 'HR', 38000.00, 4, 'neha@gmail.com'),
+// (7, 'Karan', 25, 'Pune', 'IT', 35000.00, 3, 'karan@gmail.com'),
+// (8, 'Sneha', 28, 'Indore', 'Finance', 42000.00, 5, 'sneha@gmail.com'),
+// (9, 'Vikas', 21, 'Mumbai', 'Sales', 24000.00, 1, NULL),
+// (10, 'Pooja', 30, 'Delhi', 'IT', 55000.00, 7, 'pooja@gmail.com'),
+// (11, 'Ankit', 24, 'Pune', 'HR', 30000.00, 2, 'ankit@gmail.com'),
+// (12, 'Kajal', 27, 'Mumbai', 'Finance', 47000.00, 5, 'kajal@gmail.com'),
+// (13, 'Deepak', 31, 'Indore', 'Sales', 60000.00, 8, 'deepak@gmail.com'),
+// (14, 'Aarti', 23, 'Delhi', 'IT', 29000.00, 2, 'aarti@gmail.com'),
+// (15, 'Sahil', 26, 'Pune', 'Finance', 40000.00, 4, NULL),
+// (16, 'Nisha', 28, 'Mumbai', 'HR', 46000.00, 6, 'nisha@gmail.com'),
+// (17, 'Mohit', 25, 'Delhi', 'Sales', 36000.00, 3, 'mohit@gmail.com'),
+// (18, 'Simran', 29, 'Indore', 'IT', 52000.00, 7, 'simran@gmail.com'),
+// (19, 'Arjun', 22, 'Pune', 'HR', 26000.00, 1, 'arjun@gmail.com'),
+// (20, 'Riya', 27, 'Mumbai', 'IT', 48000.00, 5, 'riya2@gmail.com'),
+// (21, 'Akash', 32, 'Delhi', 'Finance', 65000.00, 10, NULL),
+// (22, 'Divya', 24, 'Indore', 'Sales', 33000.00, 3, 'divya@gmail.com'),
+// (23, 'Manish', 30, 'Pune', 'IT', 58000.00, 8, 'manish@gmail.com'),
+// (24, 'Shreya', 26, 'Mumbai', 'Finance', 41000.00, 4, 'shreya@gmail.com'),
+// (25, 'Ravi', 23, 'Delhi', 'HR', 31000.00, 2, 'ravi@gmail.com'),
+// (26, 'Tanya', 28, 'Indore', 'IT', 49000.00, 6, NULL),
+// (27, 'Suresh', 33, 'Pune', 'Sales', 70000.00, 11, 'suresh@gmail.com'),
+// (28, 'Meena', 25, 'Mumbai', 'HR', 37000.00, 3, 'meena@gmail.com'),
+// (29, 'Abhishek', 29, 'Delhi', 'Finance', 54000.00, 7, 'abhishek@gmail.com'),
+// (30, 'Isha', 22, 'Indore', 'IT', 27000.00, 1, 'isha@gmail.com'),
+// (31, 'Vivek', 34, 'Pune', 'Finance', 75000.00, 12, 'vivek@gmail.com'),
+// (32, 'Anjali', 27, 'Mumbai', 'Sales', 44000.00, 5, NULL),
+// (33, 'Rakesh', 26, 'Delhi', 'IT', 43000.00, 4, 'rakesh@gmail.com'),
+// (34, 'Sonia', 24, 'Indore', 'HR', 34000.00, 3, 'sonia@gmail.com'),
+// (35, 'Nitin', 30, 'Pune', 'Sales', 56000.00, 8, 'nitin@gmail.com'),
+// (36, 'Komal', 25, 'Mumbai', 'IT', 39000.00, 3, 'komal@gmail.com'),
+// (37, 'Aditya', 28, 'Delhi', 'Finance', 51000.00, 6, 'aditya@gmail.com'),
+// (38, 'Bhavna', 23, 'Indore', 'Sales', 30000.00, 2, NULL),
+// (39, 'Harsh', 31, 'Pune', 'HR', 62000.00, 9, 'harsh@gmail.com'),
+// (40, 'Payal', 26, 'Mumbai', 'Finance', 45000.00, 4, 'payal@gmail.com'),
+// (41, 'Gaurav', 29, 'Delhi', 'IT', 53000.00, 7, 'gaurav@gmail.com'),
+// (42, 'Muskan', 22, 'Indore', 'HR', 26000.00, 1, 'muskan@gmail.com'),
+// (43, 'Yash', 27, 'Pune', 'Sales', 47000.00, 5, NULL),
+// (44, 'Nidhi', 28, 'Mumbai', 'IT', 50000.00, 6, 'nidhi@gmail.com'),
+// (45, 'Tarun', 32, 'Delhi', 'Sales', 68000.00, 10, 'tarun@gmail.com'),
+// (46, 'Radhika', 24, 'Indore', 'Finance', 35000.00, 3, 'radhika@gmail.com'),
+// (47, 'Ashish', 30, 'Pune', 'IT', 59000.00, 8, 'ashish@gmail.com'),
+// (48, 'Preeti', 25, 'Mumbai', 'HR', 38000.00, 3, NULL),
+// (49, 'Sanjay', 33, 'Delhi', 'Finance', 72000.00, 11, 'sanjay@gmail.com'),
+// (50, 'Kriti', 23, 'Indore', 'IT', 31000.00, 2, 'kriti@gmail.com');
 
 
 
